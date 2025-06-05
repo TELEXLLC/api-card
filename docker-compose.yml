@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  tokenization-server:
+    build: .
+    container_name: tokenization-server
+    ports:
+      - "3000:3000"
+    environment:
+      - API_CARD_API_KEY=${API_CARD_API_KEY}
+      - APPLE_JWT_TOKEN=${APPLE_JWT_TOKEN}
+      - APPLE_PRIVATE_KEY=${APPLE_PRIVATE_KEY}
+      - MASTERCARD_CONSUMER_KEY=${MASTERCARD_CONSUMER_KEY}
+      - MASTERCARD_PRIVATE_KEY=${MASTERCARD_PRIVATE_KEY}
+    volumes:
+      - .:/usr/src/app
+    command: node server.js
