@@ -2,7 +2,7 @@ Serving HTML from: /home/user/workspace/api-card-generate-card.html
 API Card Server running on port 3000
 Access the application at: http://localhost:3000
 Making API request to api-card.com with body: {
-  "ProgramID": 139,
+  "ProgramID": 1,
   "Limit": 1,
   "AddressGenerate": true,
   "ExpMonth": "11",
@@ -16,7 +16,63 @@ API response data: {
   "ErrorMessage": "The selected program i d is invalid."
 }
 Making API request to api-card.com with body: {
-  "ProgramID": 139,
+  "ProgramID": 1,
+  "Limit": 1,
+  "AddressGenerate": true,
+  "ExpMonth": "11",
+  "ExpYear": "2025",
+  "IsTest": true
+}
+API response status: 422
+API response data: {
+  "Status": 1,
+  "Good": false,
+  "ErrorMessage": "The selected program i d is invalid."
+}
+Making API request to api-card.com with body: {
+  "ProgramID": 1,
+  "Limit": 1,
+  "AddressGenerate": true,
+  "ExpMonth": "11",
+  "ExpYear": "2025",
+  "IsTest": true
+}
+API response status: 422
+API response data: {
+  "Status": 1,
+  "Good": false,
+  "ErrorMessage": "The selected program i d is invalid."
+}
+Making API request to api-card.com with body: {
+  "ProgramID": 100,
+  "Limit": 1,
+  "AddressGenerate": true,
+  "ExpMonth": "11",
+  "ExpYear": "2025",
+  "IsTest": true
+}
+API response status: 422
+API response data: {
+  "Status": 1,
+  "Good": false,
+  "ErrorMessage": "The selected program i d is invalid."
+}
+Making API request to api-card.com with body: {
+  "ProgramID": 2,
+  "Limit": 1,
+  "AddressGenerate": true,
+  "ExpMonth": "11",
+  "ExpYear": "2025",
+  "IsTest": true
+}
+API response status: 422
+API response data: {
+  "Status": 1,
+  "Good": false,
+  "ErrorMessage": "The selected program i d is invalid."
+}
+Making API request to api-card.com with body: {
+  "ProgramID": 3,
   "Limit": 1,
   "AddressGenerate": true,
   "ExpMonth": "11",

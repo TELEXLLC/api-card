@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Generate Virtual Card - Updated</title>
+  <title>Generate Virtual Card - Conferma Pay</title>
   <style>
     :root {
       --primary-color: #1a73e8;
@@ -84,10 +84,19 @@
 </head>
 <body>
   <main>
-    <h1>Generate Virtual Card</h1>
+    <h1>Generate Virtual Card - Conferma Pay</h1>
 
     <label for="programId">Program ID (required):</label>
-    <input type="number" id="programId" value="139" min="1" />
+    <select id="programId">
+      <option value="1">Program ID: 1</option>
+      <option value="2">Program ID: 2</option>
+      <option value="3">Program ID: 3</option>
+      <option value="100">Program ID: 100</option>
+      <option value="101">Program ID: 101</option>
+      <option value="139" selected>Program ID: 139 (Original)</option>
+      <option value="200">Program ID: 200</option>
+      <option value="1000">Program ID: 1000</option>
+    </select>
 
     <label for="limit">Card Limit (USD):</label>
     <input type="number" id="limit" value="1" min="0" step="0.01" />
@@ -148,16 +157,35 @@
     const responseBox = document.getElementById('response');
     const addressGenerateSelect = document.getElementById('addressGenerate');
     const manualAddressFieldsDiv = document.getElementById('manualAddressFields');
+    const programIdTypeSelect = document.getElementById('programIdType');
+    const presetProgramIdDiv = document.getElementById('presetProgramId');
+    const customProgramIdDiv = document.getElementById('customProgramId');
 
     addressGenerateSelect.addEventListener('change', () => {
       const useManual = addressGenerateSelect.value === 'false';
       manualAddressFieldsDiv.style.display = useManual ? 'block' : 'none';
     });
 
+    programIdTypeSelect.addEventListener('change', () => {
+      const useCustom = programIdTypeSelect.value === 'custom';
+      presetProgramIdDiv.style.display = useCustom ? 'none' : 'block';
+      customProgramIdDiv.style.display = useCustom ? 'block' : 'none';
+    });
+
     async function generateCard() {
       responseBox.textContent = 'Generating card... Please wait.';
 
-      const programId = Number(document.getElementById('programId').value);
+      let programId;
+      if (programIdTypeSelect.value === 'custom') {
+        programId = Number(document.getElementById('customProgramIdInput').value);
+        if (!programId || programId < 1) {
+          responseBox.textContent = 'Error: Please enter a valid custom Program ID.';
+          responseBox.className = 'error';
+          return;
+        }
+      } else {
+        programId = Number(document.getElementById('programId').value);
+      }
       const limit = Number(document.getElementById('limit').value);
       const addressGenerate = addressGenerateSelect.value === 'true';
       const expMonth = String(document.getElementById('expMonth').value).padStart(2, '0');
