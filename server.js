@@ -37,6 +37,65 @@ app.get('/old', (req, res) => {
   });
 });
 
+// Health check endpoint for production monitoring
+app.get('/health', (req, res) => {
+  const healthCheck = {
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    version: '1.0.0'
+  };
+  
+  res.status(200).json(healthCheck);
+});
+
+// Authentication status endpoint
+app.get('/auth/status', async (req, res) => {
+  const authStatus = {
+    timestamp: new Date().toISOString(),
+    conferma: {
+      configured: !!(CONFERMA_CLIENT_ID && CONFERMA_CLIENT_SECRET && CONFERMA_SCOPE && CONFERMA_CLIENT_ACCOUNT_CODE),
+      tokenCached: !!(confermaTokenCache.token),
+      tokenExpires: confermaTokenCache.expires,
+      tokenValid: confermaTokenCache.token && confermaTokenCache.expires && new Date() < new Date(confermaTokenCache.expires)
+    },
+    apple: {
+      configured: !!(APPLE_JWT_TOKEN && APPLE_PRIVATE_KEY)
+    },
+    mastercard: {
+      configured: !!(MASTERCARD_CONSUMER_KEY && MASTERCARD_PRIVATE_KEY)
+    }
+  };
+  
+  res.status(200).json(authStatus);
+});
+
+// Test Conferma authentication endpoint
+app.post('/auth/conferma/test', async (req, res) => {
+  try {
+    const startTime = Date.now();
+    const token = await getConfermaAccessToken();
+    const responseTime = Date.now() - startTime;
+    
+    res.status(200).json({
+      status: 'success',
+      message: 'Conferma authentication successful',
+      responseTime: `${responseTime}ms`,
+      tokenExpires: confermaTokenCache.expires,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Conferma auth test failed:', error.message);
+    res.status(500).json({
+      status: 'error',
+      message: 'Conferma authentication failed',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 const CONFERMA_CLIENT_ID = process.env.CONFERMA_CLIENT_ID || 'your_conferma_client_id';
 const CONFERMA_CLIENT_SECRET = process.env.CONFERMA_CLIENT_SECRET || 'your_conferma_client_secret';
 const CONFERMA_SCOPE = process.env.CONFERMA_SCOPE || 'your_conferma_scope_pkn';
@@ -64,41 +123,79 @@ let confermaTokenCache = {
 };
 
 async function getConfermaAccessToken() {
+  const startTime = Date.now();
+  
   // Check if we have a valid cached token
   if (confermaTokenCache.token && confermaTokenCache.expires && new Date() < new Date(confermaTokenCache.expires)) {
+    console.log('Using cached Conferma access token');
     return confermaTokenCache.token;
   }
 
   if (!CONFERMA_CLIENT_ID || !CONFERMA_CLIENT_SECRET || !CONFERMA_SCOPE) {
-    throw new Error('Conferma credentials not configured');
+    const error = 'Conferma credentials not configured - missing CLIENT_ID, CLIENT_SECRET, or SCOPE';
+    console.error('Authentication Error:', error);
+    throw new Error(error);
   }
 
-  // Create Basic Auth credentials
+  // Create Basic Auth credentials as per Conferma documentation
   const credentials = Buffer.from(`${CONFERMA_CLIENT_ID}:${CONFERMA_CLIENT_SECRET}`).toString('base64');
   
+  console.log('Requesting new Conferma access token...');
+  
   try {
-    const response = await fetch('https://assure.cert-confermapay.com/token', {
+    // Use production endpoint for Conferma authentication
+    const tokenEndpoint = process.env.NODE_ENV === 'production' 
+      ? 'https://assure.confermapay.com/token'  // Production endpoint
+      : 'https://assure.cert-confermapay.com/token';  // Certification/Test endpoint
+    
+    const response = await fetch(tokenEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Basic ${credentials}`
+        'Authorization': `Basic ${credentials}`,
+        'User-Agent': 'API-Card-Service/1.0'
       },
       body: `grant_type=client_credentials&scope=${CONFERMA_SCOPE}`
     });
 
+    const responseTime = Date.now() - startTime;
+
     if (!response.ok) {
       const errorData = await response.text();
-      throw new Error(`Token request failed: ${response.status} - ${errorData}`);
+      const error = `Token request failed: ${response.status} - ${errorData}`;
+      console.error('Conferma Auth Error:', {
+        status: response.status,
+        error: errorData,
+        responseTime: `${responseTime}ms`,
+        endpoint: tokenEndpoint
+      });
+      throw new Error(error);
     }
 
     const tokenData = await response.json();
+    
+    // Validate token response
+    if (!tokenData.access_token) {
+      throw new Error('Invalid token response: missing access_token');
+    }
     
     // Cache the token
     confermaTokenCache.token = tokenData.access_token;
     confermaTokenCache.expires = tokenData.expires;
     
+    console.log('Conferma access token obtained successfully:', {
+      responseTime: `${responseTime}ms`,
+      expires: tokenData.expires,
+      endpoint: tokenEndpoint
+    });
+    
     return tokenData.access_token;
   } catch (error) {
+    const responseTime = Date.now() - startTime;
+    console.error('Failed to get Conferma access token:', {
+      error: error.message,
+      responseTime: `${responseTime}ms`
+    });
     throw new Error(`Failed to get Conferma access token: ${error.message}`);
   }
 }
