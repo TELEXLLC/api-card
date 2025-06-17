@@ -1,4 +1,4 @@
-node_modules/n o d e _ m o d u l e s /  
- "node_modules/"   
 node_modules/
-server.log
+*.log
+.env
+.DS_Store
