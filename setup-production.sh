@@ -37,11 +37,7 @@ else
     echo "✅ CONFERMA_SCOPE: Configured"
 fi
 
-if grep -q "your_actual_production_client_account_code" .env.production; then
-    echo "❌ CONFERMA_CLIENT_ACCOUNT_CODE: Not configured (still placeholder)"
-else
-    echo "✅ CONFERMA_CLIENT_ACCOUNT_CODE: Configured"
-fi
+
 
 echo ""
 echo "📝 Next Steps:"
@@ -53,7 +49,6 @@ echo "2. Replace these placeholder values:"
 echo "   - CONFERMA_CLIENT_ID=your_actual_production_client_id"
 echo "   - CONFERMA_CLIENT_SECRET=your_actual_production_client_secret"
 echo "   - CONFERMA_SCOPE=your_actual_production_platform_key_name_pkn"
-echo "   - CONFERMA_CLIENT_ACCOUNT_CODE=your_actual_production_client_account_code"
 echo ""
 echo "3. Deploy to Railway:"
 echo "   - Go to https://railway.app/dashboard"

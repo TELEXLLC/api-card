@@ -186,7 +186,7 @@
         <button id="testApiBtn" 
                 class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-md transition duration-200 flex items-center justify-center">
           <i class="fas fa-flask mr-2"></i>
-          Test API
+          Check API Status
         </button>
       </div>
     </div>
@@ -201,27 +201,27 @@
       </div>
     </div>
 
-    <!-- Test Endpoints Section -->
+    <!-- API Endpoints Section -->
     <div class="bg-white rounded-lg shadow-lg p-8 mt-8">
       <h2 class="text-xl font-semibold text-gray-800 mb-4">
-        <i class="fas fa-vials mr-2"></i>API Test Endpoints
+        <i class="fas fa-vials mr-2"></i>API Endpoints
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <button onclick="testEndpoint('/test')" 
                 class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md transition duration-200">
-          <i class="fas fa-info-circle mr-2"></i>Test Info
+          <i class="fas fa-info-circle mr-2"></i>API Info
         </button>
         <button onclick="testEndpoint('/test/conferma-card')" 
                 class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition duration-200">
-          <i class="fas fa-credit-card mr-2"></i>Test Conferma
+          <i class="fas fa-credit-card mr-2"></i>Conferma API
         </button>
         <button onclick="testEndpoint('/test/mastercard')" 
                 class="bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded-md transition duration-200">
-          <i class="fas fa-cc-mastercard mr-2"></i>Test Mastercard
+          <i class="fas fa-cc-mastercard mr-2"></i>Mastercard API
         </button>
         <button onclick="testEndpoint('/test/all')" 
                 class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md transition duration-200">
-          <i class="fas fa-list-check mr-2"></i>Test All
+          <i class="fas fa-list-check mr-2"></i>All APIs
         </button>
       </div>
     </div>
@@ -296,7 +296,7 @@
     }
 
     async function testApi() {
-      responseBox.textContent = 'Running API test... Please wait.';
+      responseBox.textContent = 'Checking API status... Please wait.';
       responseBox.className = 'bg-gray-100 rounded-md p-4 font-mono text-sm overflow-auto max-h-96 whitespace-pre-wrap';
 
       try {
@@ -315,12 +315,12 @@
 
       } catch (error) {
         responseBox.className = 'bg-red-100 rounded-md p-4 font-mono text-sm overflow-auto max-h-96 whitespace-pre-wrap text-red-800';
-        responseBox.textContent = 'Test error: ' + error.message;
+        responseBox.textContent = 'API error: ' + error.message;
       }
     }
 
     async function testEndpoint(endpoint) {
-      responseBox.textContent = `Testing ${endpoint}... Please wait.`;
+      responseBox.textContent = `Checking ${endpoint}... Please wait.`;
       responseBox.className = 'bg-gray-100 rounded-md p-4 font-mono text-sm overflow-auto max-h-96 whitespace-pre-wrap';
 
       try {
@@ -339,7 +339,7 @@
 
       } catch (error) {
         responseBox.className = 'bg-red-100 rounded-md p-4 font-mono text-sm overflow-auto max-h-96 whitespace-pre-wrap text-red-800';
-        responseBox.textContent = `Error testing ${endpoint}: ` + error.message;
+        responseBox.textContent = `Error checking ${endpoint}: ` + error.message;
       }
     }
 

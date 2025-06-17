@@ -55,7 +55,7 @@ app.get('/auth/status', async (req, res) => {
   const authStatus = {
     timestamp: new Date().toISOString(),
     conferma: {
-      configured: !!(CONFERMA_CLIENT_ID && CONFERMA_CLIENT_SECRET && CONFERMA_SCOPE && CONFERMA_CLIENT_ACCOUNT_CODE),
+      configured: !!(CONFERMA_CLIENT_ID && CONFERMA_CLIENT_SECRET && CONFERMA_SCOPE),
       tokenCached: !!(confermaTokenCache.token),
       tokenExpires: confermaTokenCache.expires,
       tokenValid: confermaTokenCache.token && confermaTokenCache.expires && new Date() < new Date(confermaTokenCache.expires)
@@ -99,7 +99,7 @@ app.post('/auth/conferma/test', async (req, res) => {
 const CONFERMA_CLIENT_ID = process.env.CONFERMA_CLIENT_ID || 'your_conferma_client_id';
 const CONFERMA_CLIENT_SECRET = process.env.CONFERMA_CLIENT_SECRET || 'your_conferma_client_secret';
 const CONFERMA_SCOPE = process.env.CONFERMA_SCOPE || 'your_conferma_scope_pkn';
-const CONFERMA_CLIENT_ACCOUNT_CODE = process.env.CONFERMA_CLIENT_ACCOUNT_CODE || 'your_client_account_code';
+
 const APPLE_JWT_TOKEN = process.env.APPLE_JWT_TOKEN || 'your_default_apple_jwt';
 const APPLE_PRIVATE_KEY = process.env.APPLE_PRIVATE_KEY || `-----BEGIN PRIVATE KEY-----
 YOUR_PRIVATE_KEY_HERE
@@ -229,11 +229,7 @@ app.post('/conferma-card', async (req, res) => {
   if (!CONFERMA_CLIENT_ID || !CONFERMA_CLIENT_SECRET || !CONFERMA_SCOPE)
     return res.status(500).json({ error: 'Conferma credentials not configured' });
 
-  if (!CONFERMA_CLIENT_ACCOUNT_CODE)
-    return res.status(500).json({ error: 'CONFERMA_CLIENT_ACCOUNT_CODE not configured' });
-
   const body = {
-    clientAccountCode: CONFERMA_CLIENT_ACCOUNT_CODE,
     spendType: spendType || 'Generic',
     consumerReference,
     supplierReference,
@@ -389,10 +385,7 @@ app.get('/test/conferma-card', async (req, res) => {
         'Content-Type': 'application/json',
         'X-Request-ID': generateUUID(),
       },
-      body: JSON.stringify({
-        clientAccountCode: CONFERMA_CLIENT_ACCOUNT_CODE,
-        ...testData
-      })
+      body: JSON.stringify(testData)
     });
     
     const responseTime = Date.now() - startTime;
@@ -564,10 +557,7 @@ app.get('/test/all', async (req, res) => {
           'Content-Type': 'application/json',
           'X-Request-ID': generateUUID(),
         },
-        body: JSON.stringify({
-          clientAccountCode: CONFERMA_CLIENT_ACCOUNT_CODE,
-          ...confermaTestData
-        })
+        body: JSON.stringify(confermaTestData)
       });
       
       const confermaResponseTime = Date.now() - confermaStartTime;

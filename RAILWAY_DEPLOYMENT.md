@@ -15,7 +15,6 @@
 CONFERMA_CLIENT_ID=your_actual_production_client_id
 CONFERMA_CLIENT_SECRET=your_actual_production_client_secret  
 CONFERMA_SCOPE=your_actual_production_platform_key_name_pkn
-CONFERMA_CLIENT_ACCOUNT_CODE=your_actual_production_client_account_code
 ```
 
 ### Step 2: Deploy to Railway
@@ -37,7 +36,6 @@ PORT=3000
 CONFERMA_CLIENT_ID=your_actual_production_client_id
 CONFERMA_CLIENT_SECRET=your_actual_production_client_secret
 CONFERMA_SCOPE=your_actual_production_platform_key_name_pkn
-CONFERMA_CLIENT_ACCOUNT_CODE=your_actual_production_client_account_code
 ```
 
 7. **Deploy**: Railway will automatically build and deploy your application
@@ -60,7 +58,6 @@ railway variables set PORT=3000
 railway variables set CONFERMA_CLIENT_ID=your_actual_production_client_id
 railway variables set CONFERMA_CLIENT_SECRET=your_actual_production_client_secret
 railway variables set CONFERMA_SCOPE=your_actual_production_platform_key_name_pkn
-railway variables set CONFERMA_CLIENT_ACCOUNT_CODE=your_actual_production_client_account_code
 
 # Deploy
 railway up
@@ -104,7 +101,6 @@ Set these in Railway Dashboard → Your Project → Variables:
 | `CONFERMA_CLIENT_ID` | `your_actual_client_id` | Your Conferma client ID |
 | `CONFERMA_CLIENT_SECRET` | `your_actual_client_secret` | Your Conferma client secret |
 | `CONFERMA_SCOPE` | `your_actual_pkn` | Your Platform Key Name (PKN) |
-| `CONFERMA_CLIENT_ACCOUNT_CODE` | `your_actual_account_code` | Your client account code |
 
 ### Step 6: Monitoring and Logs
 
